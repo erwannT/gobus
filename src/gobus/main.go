@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"gobus/web"
+)
 
-func main()  {
-  fmt.Printf("Hello, world.\n")
+func main() {
+	fmt.Printf("Let's go.")
+	web.Start()
 }
