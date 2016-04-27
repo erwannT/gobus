@@ -8,21 +8,21 @@ import (
 
 func startParser() {
 
+	log.Println("Demarrage du batch")
+
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(1)
-	runParseStop()
+	runParseStop(&waitGroup)
 	waitGroup.Add(1)
 	runParseRoute(&waitGroup)
 	waitGroup.Add(1)
-	runParseCalendar()
+	runParseCalendar(&waitGroup)
 	waitGroup.Add(1)
-	runParseStopTime()
+	runParseStopTime(&waitGroup)
 	waitGroup.Add(1)
-	runParseTrip()
-}
+	runParseTrip(&waitGroup)
 
-func check(err error) {
-	if err != nil {
-		log.Panic(err)
-	}
+	log.Println("En attente de la fin du batch")
+	waitGroup.Wait()
+
 }

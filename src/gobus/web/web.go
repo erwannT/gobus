@@ -1,11 +1,14 @@
+/*
+Package web implement un serveur simple
+*/
 package web
 
 import (
 	"encoding/json"
 	"fmt"
-	"gobus/calculator"
-	"gobus/calculator/gtfsDao"
-	"gobus/calculator/model"
+	"gobus/gtfs"
+	"gobus/gtfs/dao"
+	"gobus/gtfs/model"
 	"gobus/utils"
 	"log"
 	"net/http"
@@ -14,16 +17,17 @@ import (
 	"time"
 )
 
+/*Start demarre le serveur web*/
 func Start() {
 
 	http.Handle("/app/", http.StripPrefix("/app/", http.FileServer(http.Dir("/home/erwann/tmp/gobus-web"))))
-	http.HandleFunc("/findroute", api_findRoute)
+	http.HandleFunc("/findroute", apiFindRoute)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }
 
-func api_findRoute(w http.ResponseWriter, req *http.Request) {
+func apiFindRoute(w http.ResponseWriter, req *http.Request) {
 
 	params := req.URL.Query()
 	from := strings.Split(params.Get("from"), ",")
@@ -33,8 +37,7 @@ func api_findRoute(w http.ResponseWriter, req *http.Request) {
 	startDate := time.Now().Format(utils.PatternhhmmForm)
 	// }
 
-	var dao *gtfsDao.GtfsDao
-	dao = gtfsDao.NewGtfsDao()
+	dao := dao.NewGtfsDao()
 	defer dao.Close()
 
 	// determiner le point de d'arrivée
@@ -44,10 +47,10 @@ func api_findRoute(w http.ResponseWriter, req *http.Request) {
 	// déterminer le point de depart
 	startPosition := model.Position{PositionLong: from[0], PositionLat: from[1]}
 
-	c := make(chan model.ReponseProcessChan)
+	c := make(chan model.ReponseProcess)
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go calculator.ProcessChan(dao, 1, startDate, startPosition, model.Trip{}, arrivalStops, c, &wg)
+	go gtfs.ProcessChan(dao, 1, startDate, startPosition, model.Trip{}, arrivalStops, c, &wg)
 	response := <-c
 
 	//response := calculator.Process(dao, 1, startDate, startPosition, model.Trip{}, arrivalStops)

@@ -16,7 +16,7 @@ func Add(currentTime string, addMinute int) (timeAdded string, parseErr error) {
 		parseErr = err
 		return
 	}
-	eh := sh.Add(time.Minute * 5)
+	eh := sh.Add(time.Duration(addMinute) * time.Minute)
 	timeAdded = eh.Format(PatternhhmmForm)
 	return
 }

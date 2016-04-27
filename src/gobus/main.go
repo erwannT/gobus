@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	fmt.Printf("Let's go.")
-	web.Start()
+	fmt.Printf("Let's go545.")
+	web.Start2()
 }
