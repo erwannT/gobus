@@ -9,12 +9,10 @@ import (
 	"gobus/gtfs"
 	"gobus/gtfs/dao"
 	"gobus/gtfs/model"
-	"gobus/utils"
 	"log"
 	"net/http"
 	"strings"
 	"sync"
-	"time"
 )
 
 /*Start demarre le serveur web*/
@@ -34,7 +32,8 @@ func apiFindRoute(w http.ResponseWriter, req *http.Request) {
 	to := strings.Split(params.Get("to"), ",")
 	// startDate := params.Get("time")
 	// if startDate == "now" {
-	startDate := time.Now().Format(utils.PatternhhmmForm)
+	//startDate := time.Now().Format(utils.PatternhhmmForm)
+	startDate := "14:00:00"
 	// }
 
 	dao := dao.NewGtfsDao()
